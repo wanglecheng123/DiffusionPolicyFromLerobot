@@ -200,8 +200,12 @@ def to_hf_dataset(data_dict, video) -> Dataset:
     features["timestamp"] = Value(dtype="float32", id=None)
     features["next.done"] = Value(dtype="bool", id=None)
     features["index"] = Value(dtype="int64", id=None)
-
+   
+    # Method 1: Dataset.from_dict
     hf_dataset = Dataset.from_dict(data_dict, features=Features(features))
+
+    # Method 2: Datatset.from_generator
+    
     hf_dataset.set_transform(hf_transform_to_torch)
     return hf_dataset
 
@@ -218,7 +222,7 @@ def from_raw_to_lerobot_format(
     check_format(raw_dir)
 
     if fps is None:
-        fps = 50
+        fps = 30
 
     data_dict = load_from_raw(raw_dir, videos_dir, fps, video, episodes, encoding)
     hf_dataset = to_hf_dataset(data_dict, video)
